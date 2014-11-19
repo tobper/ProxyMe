@@ -1,8 +1,7 @@
 using System;
-using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-using ProxyMe.Extensions;
 
 namespace ProxyMe.Emit
 {
@@ -44,6 +43,7 @@ namespace ProxyMe.Emit
 
             DefineConstructor(proxy, target);
             DefineProperties(proxy, contract, target);
+            DefineMethods(proxy, contract, target);
 
             return proxy;
         }
@@ -73,8 +73,8 @@ namespace ProxyMe.Emit
             il.Emit(OpCodes.Call, ObjectConstructor);
 
             // Store target in field
-            il.Emit(OpCodes.Ldarg_0); // Load 'this'
-            il.Emit(OpCodes.Ldarg_1); // Load target from constructor argument
+            il.Emit(OpCodes.Ldarg_0);       // Load 'this'
+            il.Emit(OpCodes.Ldarg_1);       // Load target from constructor argument
             il.Emit(OpCodes.Stfld, target); // Store target in field
 
             // Return
@@ -98,10 +98,10 @@ namespace ProxyMe.Emit
                 var method = proxy.DefineGetMethod(proxyProperty);
                 var il = method.GetILGenerator();
 
-                il.Emit(OpCodes.Ldarg_0);
-                il.Emit(OpCodes.Ldfld, target);
-                il.Emit(OpCodes.Callvirt, targetProperty.GetMethod);
-                il.Emit(OpCodes.Ret);
+                il.Emit(OpCodes.Ldarg_0);                               // Load 'this'
+                il.Emit(OpCodes.Ldfld, target);                         // Load target
+                il.Emit(OpCodes.Callvirt, targetProperty.GetMethod);    // Call target 'get method'
+                il.Emit(OpCodes.Ret);                                   // Return
 
                 proxyProperty.SetGetMethod(method);
             }
@@ -111,14 +111,41 @@ namespace ProxyMe.Emit
                 var method = proxy.DefineSetMethod(targetProperty);
                 var il = method.GetILGenerator();
 
-                il.Emit(OpCodes.Ldarg_0);
-                il.Emit(OpCodes.Ldfld, target);
-                il.Emit(OpCodes.Ldarg_1);
-                il.Emit(OpCodes.Callvirt, targetProperty.SetMethod);
-                il.Emit(OpCodes.Ret);
+                il.Emit(OpCodes.Ldarg_0);                               // Load 'this'
+                il.Emit(OpCodes.Ldfld, target);                         // Load target
+                il.Emit(OpCodes.Ldarg_1);                               // Load value
+                il.Emit(OpCodes.Callvirt, targetProperty.SetMethod);    // Call target 'set method'
+                il.Emit(OpCodes.Ret);                                   // Return
 
                 proxyProperty.SetSetMethod(method);
             }
+        }
+
+        private static void DefineMethods(TypeBuilder proxy, TypeInfo contract, FieldInfo target)
+        {
+            foreach (var method in contract.DeclaredMethods)
+            {
+                DefineMethod(proxy, method, target);
+            }
+        }
+
+        private static void DefineMethod(TypeBuilder proxy, MethodInfo targetMethod, FieldInfo target)
+        {
+            var parameters = targetMethod.GetParameters();
+            var parameterTypes = parameters.Select(p => p.ParameterType).ToArray();
+            var proxyMethod = proxy.DefineMethod(targetMethod, parameterTypes);
+            var il = proxyMethod.GetILGenerator();
+
+            il.Emit(OpCodes.Ldarg_0);                // Load 'this'
+            il.Emit(OpCodes.Ldfld, target);          // Load target field
+
+            for (var i = 0; i < parameters.Length; i++)
+            {
+                il.Emit(OpCodes.Ldarg, i + 1);
+            }
+
+            il.Emit(OpCodes.Callvirt, targetMethod); // Call target method
+            il.Emit(OpCodes.Ret);                    // Return
         }
     }
 }

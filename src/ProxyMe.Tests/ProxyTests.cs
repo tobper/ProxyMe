@@ -45,5 +45,20 @@ namespace ProxyMe.Tests
             // Assert
             proxy.Number.Should().Be(42);
         }
+
+        [TestMethod]
+        public void ProxiedMethodsShouldBeCalled()
+        {
+            // Arrange
+            var target = new Bar();
+            var proxy = Proxy.Create<IBar>(target);
+
+            // Act
+            proxy.SetValue(42);
+
+            // Assert
+            proxy.GetValue().Should().Be(42);
+            target.GetValue().Should().Be(42);
+        }
     }
 }

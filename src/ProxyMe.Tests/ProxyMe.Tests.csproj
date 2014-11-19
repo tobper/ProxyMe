@@ -59,7 +59,9 @@
   </Choose>
   <ItemGroup>
     <Compile Include="ContractTests.cs" />
+    <Compile Include="Models\Bar.cs" />
     <Compile Include="Models\Foo.cs" />
+    <Compile Include="Models\IBar.cs" />
     <Compile Include="Models\IFoo.cs" />
     <Compile Include="Models\VirtualFoo.cs" />
     <Compile Include="NamespaceTests.cs" />
