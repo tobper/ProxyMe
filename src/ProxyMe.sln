@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30723.0
+VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProxyMe", "ProxyMe\ProxyMe.csproj", "{0A813422-732C-46E7-A04E-4AF00C7D8A05}"
 EndProject
@@ -11,6 +11,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{95D48804-7
 	ProjectSection(SolutionItems) = preProject
 		..\License.md = ..\License.md
 		..\Readme.md = ..\Readme.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{B43A68A5-F385-45EC-81B6-AE2E861060BD}"
+	ProjectSection(SolutionItems) = preProject
+		..\scripts\Deploy-NuGetPackage.ps1 = ..\scripts\Deploy-NuGetPackage.ps1
+		..\scripts\Get-GitVersion.ps1 = ..\scripts\Get-GitVersion.ps1
 	EndProjectSection
 EndProject
 Global
