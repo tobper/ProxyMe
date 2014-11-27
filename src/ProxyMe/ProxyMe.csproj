@@ -39,6 +39,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Caching\DynamicDictionaryContract.cs" />
     <Compile Include="Caching\DynamicContract.cs" />
     <Compile Include="Caching\DynamicSubtype.cs" />
     <Compile Include="Caching\DynamicProxy.cs" />
@@ -46,11 +47,12 @@
     <Compile Include="Caching\TypeExtensions.cs" />
     <Compile Include="Emit\AppDomainExtensions.cs" />
     <Compile Include="Emit\AssemblyBuilderExtensions.cs" />
-    <Compile Include="Emit\ContractModuleBuilderExtensions.cs" />
-    <Compile Include="Emit\ModuleBuilderExtensions.cs" />
+    <Compile Include="Emit\TypeBuilderExtensions_Methods.cs" />
+    <Compile Include="Emit\TypeBuilderExtensions_Properties.cs" />
+    <Compile Include="Emit\TypeBuilderExtensions_Constructors.cs" />
     <Compile Include="Emit\PropertyBuilderExtensions.cs" />
-    <Compile Include="Emit\SubTypeBuilderExtensions.cs" />
-    <Compile Include="Emit\ProxyModuleBuilderExtensions.cs" />
+    <Compile Include="Emit\TypeBuilderExtensions_Fields.cs" />
+    <Compile Include="Emit\TypeBuilderExtensions.cs" />
     <Compile Include="Extensions\EnumerableExtensions.cs" />
     <Compile Include="Proxy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

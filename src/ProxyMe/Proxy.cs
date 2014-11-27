@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using ProxyMe.Caching;
 
 namespace ProxyMe
@@ -31,6 +32,16 @@ namespace ProxyMe
             where T : class
         {
             return DynamicContract<T>.CreateInstance(initializer);
+        }
+
+        /// <summary>Creates an implementation of interface <typeparamref name="T"/>.</summary>
+        /// <typeparam name="T">The type of interface to create an implementation for.</typeparam>
+        /// <param name="properties"></param>
+        /// <returns>An instance of <typeparamref name="T"/>.</returns>
+        public static T CreateContract<T>(IDictionary<string, object> properties)
+            where T : class
+        {
+            return DynamicDictionaryContract<T>.CreateInstance(properties);
         }
 
         /// <summary>Creates a subtype of <typeparamref name="T"/>.</summary>

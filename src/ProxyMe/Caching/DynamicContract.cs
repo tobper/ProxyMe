@@ -7,19 +7,19 @@ namespace ProxyMe.Caching
         where T : class
     {
         private static readonly Type Type;
-        private static readonly Func<T> Constructor;
+        private static readonly Func<T> DefaultConstructor;
         private static readonly Func<Action<T>, T> InitConstructor;
 
         static DynamicContract()
         {
             Type = CreateType();
-            Constructor = Type.CreateConstructorDelegate<T>();
+            DefaultConstructor = Type.CreateConstructorDelegate<T>();
             InitConstructor = Type.CreateConstructorDelegate<T, Action<T>>();
         }
 
         public static T CreateInstance()
         {
-            return Constructor();
+            return DefaultConstructor();
         }
 
         public static T CreateInstance(Action<T> initializer)
