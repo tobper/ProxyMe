@@ -41,19 +41,21 @@
   <ItemGroup>
     <Compile Include="Caching\DynamicDictionaryContract.cs" />
     <Compile Include="Caching\DynamicContract.cs" />
-    <Compile Include="Caching\DynamicSubtype.cs" />
+    <Compile Include="Caching\DynamicSubType.cs" />
     <Compile Include="Caching\DynamicProxy.cs" />
     <Compile Include="Caching\ProxyModuleBuilder.cs" />
     <Compile Include="Caching\TypeExtensions.cs" />
-    <Compile Include="Emit\AppDomainExtensions.cs" />
-    <Compile Include="Emit\AssemblyBuilderExtensions.cs" />
-    <Compile Include="Emit\TypeBuilderExtensions_Methods.cs" />
-    <Compile Include="Emit\TypeBuilderExtensions_Properties.cs" />
-    <Compile Include="Emit\TypeBuilderExtensions_Constructors.cs" />
-    <Compile Include="Emit\PropertyBuilderExtensions.cs" />
-    <Compile Include="Emit\TypeBuilderExtensions_Fields.cs" />
-    <Compile Include="Emit\TypeBuilderExtensions.cs" />
-    <Compile Include="Extensions\EnumerableExtensions.cs" />
+    <Compile Include="Emit\DynamicDictionaryContractBuilder.cs" />
+    <Compile Include="Emit\DynamicProxyBuilder.cs" />
+    <Compile Include="Emit\Extensions\AppDomainExtensions.cs" />
+    <Compile Include="Emit\Extensions\AssemblyBuilderExtensions.cs" />
+    <Compile Include="Emit\DynamicContractBuilder.cs" />
+    <Compile Include="Emit\Extensions\IlGeneratorExtensions.cs" />
+    <Compile Include="Emit\DynamicTypeBuilder.cs" />
+    <Compile Include="Emit\Extensions\TypeBuilderExtensions_Properties.cs" />
+    <Compile Include="Emit\Extensions\TypeBuilderExtensions_Constructors.cs" />
+    <Compile Include="Emit\Extensions\TypeBuilderExtensions.cs" />
+    <Compile Include="Emit\DynamicSubTypeBuilder.cs" />
     <Compile Include="Proxy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

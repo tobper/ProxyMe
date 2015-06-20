@@ -34,10 +34,11 @@ namespace ProxyMe.Caching
 
         private static Type CreateType()
         {
-            return ProxyModuleBuilder.
-                Get().
-                DefineContractType<T>().
-                CreateType();
+            var contractType = typeof (T);
+            var proxyBuilder = new DynamicContractBuilder();
+            var proxyType = proxyBuilder.CreateType(contractType);
+
+            return proxyType;
         }
     }
 }

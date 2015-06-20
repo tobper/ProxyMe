@@ -1,6 +1,6 @@
 using System;
 using System.Reflection.Emit;
-using ProxyMe.Emit;
+using ProxyMe.Emit.Extensions;
 
 namespace ProxyMe.Caching
 {
