@@ -22,13 +22,26 @@ namespace ProxyMe.Emit
             Type = type;
             TypeInfo = type.GetTypeInfo();
 
-            var typeName = GetTypeName();
-            var moduleBuilder = GetModuleBuilder();
-            var typeBuilder = DefineType(moduleBuilder, typeName);
+            try
+            {
+                Initialize();
 
-            DefineMembers(typeBuilder);
+                var typeName = GetTypeName();
+                var moduleBuilder = GetModuleBuilder();
+                var typeBuilder = DefineType(moduleBuilder, typeName);
 
-            return typeBuilder.CreateType();
+                DefineMembers(typeBuilder);
+
+                return typeBuilder.CreateType();
+            }
+            finally
+            {
+                Cleanup();
+            }
+        }
+
+        protected virtual void Cleanup()
+        {
         }
 
         protected virtual void DefineFields(TypeBuilder typeBuilder)
@@ -101,6 +114,10 @@ namespace ProxyMe.Emit
         protected virtual string GetTypeName()
         {
             return Type.GetProxyTypeName("Proxy");
+        }
+
+        protected virtual void Initialize()
+        {
         }
     }
 }
