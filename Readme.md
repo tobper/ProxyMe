@@ -3,12 +3,12 @@
 
 .NET dynamic proxy library.
 
-ProxyMe can create three different types of proxes.
+ProxyMe can create three different types of proxies.
 
 
 ## Proxy
 
-A proxy is a reference to an interace.
+A proxy is a reference to an interface.
 
 
 ## Contract
