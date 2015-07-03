@@ -54,7 +54,7 @@ namespace ProxyMe.Emit
             il.Emit(OpCodes.Stfld, _propertiesField);                       // Store argument in field
 
             // Add default values for all properties if dictionary does not already contain matching values
-            foreach (var property in TypeInfo.DeclaredProperties)
+            foreach (var property in ReferenceTypeInfo.DeclaredProperties)
             {
                 var label = il.DefineLabel();
 
@@ -138,10 +138,10 @@ namespace ProxyMe.Emit
 
         protected override TypeBuilder DefineType(ModuleBuilder moduleBuilder, string typeName)
         {
-            if (Type.IsInterface == false)
+            if (ReferenceType.IsInterface == false)
                 throw new InvalidOperationException("A dynamic contract can only be created for interfaces.");
 
-            if (TypeInfo.DeclaredMethods.Any(m => m.IsSpecialName == false))
+            if (ReferenceTypeInfo.DeclaredMethods.Any(m => m.IsSpecialName == false))
                 throw new InvalidOperationException("A dynamic contract can not be created for an interface with methods.");
 
             return base.DefineType(moduleBuilder, typeName);
@@ -149,7 +149,7 @@ namespace ProxyMe.Emit
 
         protected override string GetTypeName()
         {
-            return Type.GetProxyTypeName("DynamicDictionaryContract");
+            return ReferenceType.GetProxyTypeName("DynamicDictionaryContract");
         }
     }
 }

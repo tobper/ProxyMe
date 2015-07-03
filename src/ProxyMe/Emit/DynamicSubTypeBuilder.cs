@@ -8,7 +8,7 @@ namespace ProxyMe.Emit
     {
         protected override TypeBuilder DefineType(ModuleBuilder moduleBuilder, string typeName)
         {
-            if (Type.IsInterface)
+            if (ReferenceType.IsInterface)
                 throw new InvalidOperationException("A dynamic sub type can only be created for classes.");
 
             return base.DefineType(moduleBuilder, typeName);
@@ -16,7 +16,7 @@ namespace ProxyMe.Emit
 
         protected override string GetTypeName()
         {
-            return Type.GetProxyTypeName("DynamicSubType");
+            return ReferenceType.GetProxyTypeName("DynamicSubType");
         }
     }
 }

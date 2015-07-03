@@ -9,18 +9,20 @@ namespace ProxyMe.Emit
 {
     public class DynamicTypeBuilder
     {
-        /// <summary>Gets the type to create a proxy for.</summary>
-        protected Type Type { get; private set; }
+        /// <summary>
+        ///     Returns the reference type to define a new type for.
+        /// </summary>
+        protected Type ReferenceType { get; private set; }
 
         /// <summary>
         /// Returns the <see cref="System.Reflection.TypeInfo"/> representation of the specified type.
         /// </summary>
-        protected TypeInfo TypeInfo { get; private set; }
+        protected TypeInfo ReferenceTypeInfo { get; private set; }
 
         public virtual Type CreateType(Type type)
         {
-            Type = type;
-            TypeInfo = type.GetTypeInfo();
+            ReferenceType = referenceType;
+            ReferenceTypeInfo = referenceType.GetTypeInfo();
 
             try
             {
@@ -63,7 +65,7 @@ namespace ProxyMe.Emit
 
         protected virtual void DefineProperties(TypeBuilder typeBuilder)
         {
-            foreach (var property in TypeInfo.DeclaredProperties)
+            foreach (var property in ReferenceTypeInfo.DeclaredProperties)
             {
                 DefineProperty(typeBuilder, property);
             }
@@ -76,7 +78,7 @@ namespace ProxyMe.Emit
 
         protected virtual void DefineMethods(TypeBuilder typeBuilder)
         {
-            var methods = TypeInfo.DeclaredMethods.Where(m => m.IsSpecialName == false);
+            var methods = ReferenceTypeInfo.DeclaredMethods.Where(m => m.IsSpecialName == false);
 
             foreach (var method in methods)
             {
@@ -94,10 +96,10 @@ namespace ProxyMe.Emit
             var parent = (Type)null;
             var contracts = (Type[])null;
 
-            if (Type.IsInterface)
-                contracts = new[] { Type };
+            if (ReferenceType.IsInterface)
+                contracts = new[] { ReferenceType };
             else
-                parent = Type;
+                parent = ReferenceType;
 
             return moduleBuilder.DefineType(
                 typeName,
@@ -113,7 +115,7 @@ namespace ProxyMe.Emit
 
         protected virtual string GetTypeName()
         {
-            return Type.GetProxyTypeName("Proxy");
+            return ReferenceType.GetProxyTypeName("Proxy");
         }
 
         protected virtual void Initialize()

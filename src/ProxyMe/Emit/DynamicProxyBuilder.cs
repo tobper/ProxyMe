@@ -32,7 +32,7 @@ namespace ProxyMe.Emit
         {
             _targetField = typeBuilder.DefineField(
                 "_target",
-                Type,
+                ReferenceType,
                 FieldAttributes.Private | FieldAttributes.InitOnly);
         }
 
@@ -89,7 +89,7 @@ namespace ProxyMe.Emit
 
         protected override TypeBuilder DefineType(ModuleBuilder moduleBuilder, string typeName)
         {
-            if (Type.IsInterface == false)
+            if (ReferenceType.IsInterface == false)
                 throw new InvalidOperationException("A dynamic proxy can only be created for interfaces.");
 
             return base.DefineType(moduleBuilder, typeName);
@@ -97,7 +97,7 @@ namespace ProxyMe.Emit
 
         protected override string GetTypeName()
         {
-            return Type.GetProxyTypeName("DynamicProxy");
+            return ReferenceType.GetProxyTypeName("DynamicProxy");
         }
     }
 }
