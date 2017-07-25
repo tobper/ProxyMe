@@ -15,7 +15,7 @@ namespace ProxyMe.Emit
 
         protected override TypeBuilder DefineType(ModuleBuilder moduleBuilder, string typeName)
         {
-            if (ReferenceType.IsInterface == false)
+            if (ReferenceTypeInfo.IsInterface == false)
                 throw new InvalidOperationException("A dynamic contract can only be created for interfaces.");
 
             if (ReferenceTypeInfo.DeclaredMethods.Any(m => m.IsSpecialName == false))

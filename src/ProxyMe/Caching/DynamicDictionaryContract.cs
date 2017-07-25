@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using ProxyMe.Emit;
 
 namespace ProxyMe.Caching
@@ -7,7 +8,7 @@ namespace ProxyMe.Caching
     public static class DynamicDictionaryContract<T>
         where T : class
     {
-        private static readonly Type Type;
+        private static readonly TypeInfo Type;
         private static readonly Func<IDictionary<string, object>, T> Constructor;
 
         static DynamicDictionaryContract()
@@ -23,10 +24,10 @@ namespace ProxyMe.Caching
 
         public static Type GetDynamicType()
         {
-            return Type;
+            return Type.GetType();
         }
 
-        private static Type CreateType()
+        private static TypeInfo CreateType()
         {
             var contractType = typeof(T);
             var proxyBuilder = new DynamicDictionaryContractBuilder();

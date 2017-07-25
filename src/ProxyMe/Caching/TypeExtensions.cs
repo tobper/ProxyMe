@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 
 namespace ProxyMe.Caching
 {
@@ -18,7 +20,7 @@ namespace ProxyMe.Caching
         /// <returns>
         ///     Returns the delegate for the constructor.
         /// </returns>
-        public static Func<T> CreateConstructorDelegate<T>(this Type type)
+        public static Func<T> CreateConstructorDelegate<T>(this TypeInfo type)
         {
             return CreateConstructorDelegate<Func<T>>(type, Type.EmptyTypes);
         }
@@ -38,7 +40,7 @@ namespace ProxyMe.Caching
         /// <returns>
         ///     Returns the delegate for the constructor.
         /// </returns>
-        public static Func<TArg, T> CreateConstructorDelegate<T, TArg>(this Type type)
+        public static Func<TArg, T> CreateConstructorDelegate<T, TArg>(this TypeInfo type)
         {
             return CreateConstructorDelegate<Func<TArg, T>>(type, new[] { typeof(TArg) });
         }
@@ -48,24 +50,24 @@ namespace ProxyMe.Caching
         /// </summary>
         /// <typeparam name="TFunc">
         ///     The type of delegate to return. This must match the provided
-        ///     <paramref name="type"/> and <paramref name="constructorArguments"/>.
+        ///     <paramref name="type"/> and <paramref name="parameters"/>.
         /// </typeparam>
         /// <param name="type">
         ///     The <see cref="System.Type"/> to create a constructor delegate for.
         /// </param>
-        /// <param name="constructorArguments">
+        /// <param name="parameters">
         ///     The type of arguments of the constructor.
         /// </param>
         /// <returns>
         ///     Returns the delegate for the constructor.
         /// </returns>
-        public static TFunc CreateConstructorDelegate<TFunc>(this Type type, Type[] constructorArguments)
+        public static TFunc CreateConstructorDelegate<TFunc>(this TypeInfo type, IReadOnlyList<Type> parameters)
         {
-            var constructor = type.GetConstructor(constructorArguments);
+            var constructor = GetConstructor(type, parameters);
             if (constructor == null)
                 throw new InvalidOperationException("Type is missing constructor");
 
-            var argumentExpressions = constructorArguments.
+            var argumentExpressions = parameters.
                 Select(Expression.Parameter).
                 ToArray();
 
@@ -76,6 +78,36 @@ namespace ProxyMe.Caching
             return Expression.
                 Lambda<TFunc>(constructionExpression, argumentExpressions).
                 Compile();
+        }
+
+        private static ConstructorInfo GetConstructor(TypeInfo typeInfo, IReadOnlyList<Type> parameters)
+        {
+            bool CollectionEquals<T>(IReadOnlyList<T> types1, IReadOnlyList<T> types2) where T: class
+            {
+                if (types1.Count != types2.Count)
+                    return false;
+
+                for (var i = 0; i < types1.Count; i++)
+                {
+                    if (types1[i] != types2[i])
+                        return false;
+                }
+
+                return true;
+            }
+
+            foreach (var declaredConstructor in typeInfo.DeclaredConstructors)
+            {
+                var declaredParameters = declaredConstructor.
+                    GetParameters().
+                    Select(p => p.ParameterType).
+                    ToArray();
+
+                if (CollectionEquals(parameters, declaredParameters))
+                    return declaredConstructor;
+            }
+
+            return null;
         }
     }
 }

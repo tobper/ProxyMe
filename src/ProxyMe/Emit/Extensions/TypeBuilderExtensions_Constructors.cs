@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 
@@ -14,7 +15,8 @@ namespace ProxyMe.Emit.Extensions
         public static ConstructorBuilder DefineInitializationConstructor(this TypeBuilder typeBuilder, Type type)
         {
             var actionType = typeof(Action<>).MakeGenericType(type);
-            var actionInvoke = actionType.GetMethod("Invoke");
+            var actionTypeInfo = actionType.GetTypeInfo();
+            var actionInvoke = actionTypeInfo.DeclaredMethods.Single(m => m.Name == "Invoke");
             var arguments = new[] { actionType };
             var constructor = typeBuilder.DefineConstructor(MethodAttributes.Public, CallingConventions.Standard, arguments);
             var il = constructor.GetILGenerator();

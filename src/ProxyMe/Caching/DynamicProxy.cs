@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Reflection;
 using ProxyMe.Emit;
 
 namespace ProxyMe.Caching
 {
     public static class DynamicProxy<T>
     {
-        private static readonly Type Type;
+        private static readonly TypeInfo Type;
         private static readonly Func<T, T> Constructor;
 
         static DynamicProxy()
@@ -21,10 +22,10 @@ namespace ProxyMe.Caching
 
         public static Type GetDynamicType()
         {
-            return Type;
+            return Type.GetType();
         }
 
-        private static Type CreateType()
+        private static TypeInfo CreateType()
         {
             var contractType = typeof(T);
             var proxyBuilder = new DynamicProxyBuilder();

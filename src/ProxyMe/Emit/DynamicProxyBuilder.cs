@@ -89,7 +89,7 @@ namespace ProxyMe.Emit
 
         protected override TypeBuilder DefineType(ModuleBuilder moduleBuilder, string typeName)
         {
-            if (ReferenceType.IsInterface == false)
+            if (ReferenceTypeInfo.IsInterface == false)
                 throw new InvalidOperationException("A dynamic proxy can only be created for interfaces.");
 
             return base.DefineType(moduleBuilder, typeName);

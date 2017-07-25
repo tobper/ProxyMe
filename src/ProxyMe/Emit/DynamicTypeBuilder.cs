@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-using ProxyMe.Caching;
 using ProxyMe.Emit.Extensions;
 
 namespace ProxyMe.Emit
@@ -41,7 +40,7 @@ namespace ProxyMe.Emit
         ///     The type cannot be loaded. For example, it contains a static method that
         ///     has the calling convention System.Reflection.CallingConventions.HasThis.
         /// </exception>
-        public virtual Type CreateType(Type referenceType)
+        public virtual TypeInfo CreateType(Type referenceType)
         {
             ReferenceType = referenceType;
             ReferenceTypeInfo = referenceType.GetTypeInfo();
@@ -56,7 +55,7 @@ namespace ProxyMe.Emit
 
                 DefineMembers(typeBuilder);
 
-                return typeBuilder.CreateType();
+                return typeBuilder.CreateTypeInfo();
             }
             finally
             {
@@ -185,7 +184,7 @@ namespace ProxyMe.Emit
             var parent = (Type)null;
             var contracts = (Type[])null;
 
-            if (ReferenceType.IsInterface)
+            if (ReferenceTypeInfo.IsInterface)
                 contracts = new[] { ReferenceType };
             else
                 parent = ReferenceType;
@@ -207,7 +206,13 @@ namespace ProxyMe.Emit
         /// </returns>
         protected virtual ModuleBuilder GetModuleBuilder()
         {
-            return ProxyModuleBuilder.Get();
+            const string name = "ProxyMe.DynamicTypes";
+
+            var assemblyName = new AssemblyName(name);
+            var assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.Run);
+            var module = assemblyBuilder.DefineDynamicModule(name);
+
+            return module;
         }
 
         /// <summary>

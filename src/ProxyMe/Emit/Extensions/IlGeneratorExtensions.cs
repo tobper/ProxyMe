@@ -1,5 +1,4 @@
-﻿using System;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Reflection.Emit;
 
 namespace ProxyMe.Emit.Extensions
@@ -12,7 +11,7 @@ namespace ProxyMe.Emit.Extensions
         {
             // Get reference to default Object constructor
             var objectType = typeof(object);
-            var defaultConstructor = objectType.GetConstructor(Type.EmptyTypes);
+            var defaultConstructor = objectType.GetTypeInfo().GetDefaultConstructor();
 
             ObjectConstructor = defaultConstructor;
         }

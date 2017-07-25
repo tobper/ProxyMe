@@ -18,11 +18,11 @@ namespace ProxyMe.Emit
         static DynamicDictionaryContractBuilder()
         {
             // Get reference to dictionary get/set methods
-            var dictionaryType = typeof(IDictionary<string, object>);
+            var dictionaryType = typeof(IDictionary<string, object>).GetTypeInfo();
 
-            DictionaryGetMethod = dictionaryType.GetMethod("get_Item");
-            DictionarySetMethod = dictionaryType.GetMethod("set_Item");
-            DictionaryContainsKeyMethod = dictionaryType.GetMethod("ContainsKey");
+            DictionaryGetMethod = dictionaryType.GetDeclaredMethod("get_Item");
+            DictionarySetMethod = dictionaryType.GetDeclaredMethod("set_Item");
+            DictionaryContainsKeyMethod = dictionaryType.GetDeclaredMethod("ContainsKey");
         }
 
         protected override void DefineConstructors(TypeBuilder typeBuilder)
@@ -66,7 +66,7 @@ namespace ProxyMe.Emit
                 il.Emit(OpCodes.Ldarg_1);                                   // Load dictionary
                 il.Emit(OpCodes.Ldstr, property.Name);                      // Load property name
 
-                if (property.PropertyType.IsValueType)
+                if (property.PropertyType.GetTypeInfo().IsValueType)
                 {
                     il.Emit(OpCodes.Ldc_I4_0);                              // Load default value for value types
                     il.Emit(OpCodes.Box, property.PropertyType);            // Box default value
@@ -100,7 +100,7 @@ namespace ProxyMe.Emit
                 il.Emit(OpCodes.Ldstr, property.Name);                  // Load name of property
                 il.Emit(OpCodes.Callvirt, DictionaryGetMethod);         // Call method
 
-                if (property.PropertyType.IsValueType)
+                if (property.PropertyType.GetTypeInfo().IsValueType)
                 {
                     il.Emit(OpCodes.Unbox_Any, property.PropertyType);  // Unbox value type
                 }
@@ -124,7 +124,7 @@ namespace ProxyMe.Emit
                 il.Emit(OpCodes.Ldstr, property.Name);              // Load name of property
                 il.Emit(OpCodes.Ldarg_1);                           // Load value
 
-                if (property.PropertyType.IsValueType)
+                if (property.PropertyType.GetTypeInfo().IsValueType)
                 {
                     il.Emit(OpCodes.Box, property.PropertyType);    // Box value type
                 }
@@ -138,7 +138,7 @@ namespace ProxyMe.Emit
 
         protected override TypeBuilder DefineType(ModuleBuilder moduleBuilder, string typeName)
         {
-            if (ReferenceType.IsInterface == false)
+            if (ReferenceTypeInfo.IsInterface == false)
                 throw new InvalidOperationException("A dynamic contract can only be created for interfaces.");
 
             if (ReferenceTypeInfo.DeclaredMethods.Any(m => m.IsSpecialName == false))
