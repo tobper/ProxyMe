@@ -8,7 +8,7 @@ namespace ProxyMe.Tests
     public class SubTypeTests
     {
         [TestMethod]
-        public void ReturnInstance()
+        public void SubType_Create_ShouldNotReturnNull()
         {
             // Act
             var proxy = Proxy.CreateSubType<Foo>();

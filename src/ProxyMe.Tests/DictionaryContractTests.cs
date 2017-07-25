@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ProxyMe.Tests.Models;
@@ -11,7 +10,7 @@ namespace ProxyMe.Tests
     public class DictionaryContractTests
     {
         [TestMethod]
-        public void ContractShouldBeCreated()
+        public void DictionaryContract_Create_ShouldReturnObject_ForInterfaces()
         {
             // Act
             var properties = new Dictionary<string, object>();
@@ -22,7 +21,7 @@ namespace ProxyMe.Tests
         }
 
         [TestMethod]
-        public void ContractShouldBeCreatedForGenerics()
+        public void DictionaryContract_Create_ShouldReturnObject_ForGenerics()
         {
             // Act
             var properties = new Dictionary<string, object>();
@@ -33,7 +32,7 @@ namespace ProxyMe.Tests
         }
 
         [TestMethod]
-        public void ContractShouldBeCreatedWithInitializedValues()
+        public void DictionaryContract_Create_ShouldBeInitializedWithSuppliedValues()
         {
             // Act
             var properties = new Dictionary<string, object>
@@ -49,23 +48,23 @@ namespace ProxyMe.Tests
         }
 
         [TestMethod]
-        public void ContractShouldBeCreatedForGenericWithInitializedValues()
+        public void DictionaryContract_Create_ShouldBeInitializedWithSuppliedValues_ForGenerics()
         {
             // Act
             var properties = new Dictionary<string, object>
             {
-                { "Number", 42 }
+                { "Value", 42 }
             };
 
             var foo = Proxy.CreateContract<IFoo<int>>(properties);
 
             // Assert
             foo.Should().NotBeNull();
-            foo.Number.Should().Be(42);
+            foo.Value.Should().Be(42);
         }
 
         [TestMethod]
-        public void ContractShouldSupportModifyingProperties()
+        public void DictionaryContract_Create_ShouldSupportModifyingProperties()
         {
             // Arrange
             var properties = new Dictionary<string, object>();
@@ -79,7 +78,7 @@ namespace ProxyMe.Tests
         }
 
         [TestMethod]
-        public void ContractShouldInitializeWithDefaultValues()
+        public void DictionaryContract_Create_ShouldBeInitializedWithDefaultValues()
         {
             // Arrange
             var properties = new Dictionary<string, object>();
@@ -110,7 +109,7 @@ namespace ProxyMe.Tests
         }
 
         [TestMethod]
-        public void ContractShouldNotInitializeWithDefaultValuesIfPropertiesAlreadyHasValues()
+        public void DictionaryContract_Create_ShouldNotBeInitializeWithDefaultValuesIfPropertiesAlreadyHaveValues()
         {
             // Arrange
             var obj = new Object();

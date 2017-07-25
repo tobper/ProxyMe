@@ -8,7 +8,7 @@ namespace ProxyMe.Tests
     public class NamespaceTests
     {
         [TestMethod]
-        public void NamespaceShouldBeSameAsContractType()
+        public void Namespace_ShouldBeTheSameAsContractType_ForContracts()
         {
             // Act
             var proxy = Proxy.CreateContract<IFoo>();
@@ -23,7 +23,7 @@ namespace ProxyMe.Tests
         }
 
         [TestMethod]
-        public void NamespaceShouldBeSameAsProxyType()
+        public void Namespace_ShouldBeTheSameAsProxyType_ForProxies()
         {
             var foo = new Foo();
 

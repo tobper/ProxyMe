@@ -7,6 +7,6 @@
 
     public interface IFoo<T>
     {
-        T Number { get; set; }
+        T Value { get; set; }
     }
 }

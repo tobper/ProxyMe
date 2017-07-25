@@ -8,7 +8,7 @@ namespace ProxyMe.Tests
     public class ContractTests
     {
         [TestMethod]
-        public void ContractShouldBeCreated()
+        public void Contract_Create_ShouldReturnObject_ForInterfaces()
         {
             // Act
             var foo = Proxy.CreateContract<IFoo>();
@@ -18,7 +18,7 @@ namespace ProxyMe.Tests
         }
 
         [TestMethod]
-        public void ContractShouldBeCreatedForGenerics()
+        public void Contract_Create_ShouldReturnObject_ForGenerics()
         {
             // Act
             var foo = Proxy.CreateContract<IFoo<int>>();
@@ -28,7 +28,7 @@ namespace ProxyMe.Tests
         }
 
         [TestMethod]
-        public void ContractShouldBeCreatedWithInitializedValues()
+        public void Contract_Create_ShouldBeInitializedWithSuppliedValues()
         {
             // Act
             var foo = Proxy.CreateContract<IFoo>(c =>
@@ -42,21 +42,21 @@ namespace ProxyMe.Tests
         }
 
         [TestMethod]
-        public void ContractShouldBeCreatedForGenericWithInitializedValues()
+        public void Contract_Create_ShouldBeInitializedWithSuppliedValues_ForGenerics()
         {
             // Act
             var foo = Proxy.CreateContract<IFoo<int>>(c =>
             {
-                c.Number = 42;
+                c.Value = 42;
             });
 
             // Assert
             foo.Should().NotBeNull();
-            foo.Number.Should().Be(42);
+            foo.Value.Should().Be(42);
         }
 
         [TestMethod]
-        public void ContractShouldSupportModifyingProperties()
+        public void Contract_SetProperty_ShouldUpdateTheProperty()
         {
             // Arrange
             var foo = Proxy.CreateContract<IFoo>();

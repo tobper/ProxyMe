@@ -8,7 +8,7 @@ namespace ProxyMe.Tests
     public class ProxyTests
     {
         [TestMethod]
-        public void ProxyShouldBeCreated()
+        public void Proxy_Create_ShouldReturnObject()
         {
             var foo = new Foo();
 
@@ -20,7 +20,7 @@ namespace ProxyMe.Tests
         }
 
         [TestMethod]
-        public void ProxiedPropertyShouldSetTargetValue()
+        public void Proxy_SetProperty_ShouldSetTargetProperty()
         {
             // Arrange
             var foo = new Foo();
@@ -34,7 +34,7 @@ namespace ProxyMe.Tests
         }
 
         [TestMethod]
-        public void ProxiedPropertyShouldReadTargetValue()
+        public void Proxy_GetProperty_ShouldGetTargetProperty()
         {
             // Arrange
             var foo = new Foo { Number = 42 };
@@ -47,7 +47,7 @@ namespace ProxyMe.Tests
         }
 
         [TestMethod]
-        public void ProxiedMethodsShouldBeCalled()
+        public void Proxy_MethodCall_ShouldCallTargetMethod()
         {
             // Arrange
             var target = new Bar();
