@@ -15,7 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{95D48804-7
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scripts", "Scripts", "{B43A68A5-F385-45EC-81B6-AE2E861060BD}"
 	ProjectSection(SolutionItems) = preProject
-		..\scripts\Deploy-NuGetPackage.ps1 = ..\scripts\Deploy-NuGetPackage.ps1
+		..\appveyor.yml = ..\appveyor.yml
 		..\scripts\Get-GitVersion.ps1 = ..\scripts\Get-GitVersion.ps1
 	EndProjectSection
 EndProject

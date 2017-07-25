@@ -1,0 +1,28 @@
+version: '{build}'
+
+install:
+- ps: $env:PackageVersion = .\scripts\Get-GitVersion
+- ps: $env:FileVersion = $env:PackageVersion -replace '-.+?(\.\d+)','$1'
+- cmd: appveyor UpdateBuild -Version "v%PackageVersion%, Build %APPVEYOR_BUILD_NUMBER%"
+- cmd: "echo Build: %APPVEYOR_BUILD_NUMBER% & echo File version: %FileVersion% & echo Package version: %PackageVersion%"
+
+build_script:
+- cmd: dotnet restore .\src\
+- cmd: dotnet build .\src\ -c:Release -p:FileVersion=%FileVersion% -p:Version=%PackageVersion%
+- cmd: dotnet pack --no-build --include-source .\src\ProxyMe -c:Release -p:PackageVersion=%PackageVersion%
+
+test_script:
+- cmd: dotnet test --no-build --logger trx;logfilename=TestResults.xml .\src\ProxyMe.Tests\ProxyMe.Tests.csproj -c:Release
+
+artifacts:
+- path: '**\*.nupkg'
+  name: NuGet packages
+
+deploy:
+- provider: NuGet
+  api_key: $(NuGetApiKey)
+  on:
+    APPVEYOR_REPO_TAG: true
+
+on_finish:
+- ps: dir -r TestResults.xml | % { (New-Object 'System.Net.WebClient').UploadFile("https://ci.appveyor.com/api/testresults/mstest/$($env:APPVEYOR_JOB_ID)", $_) }
