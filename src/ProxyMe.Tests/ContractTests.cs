@@ -28,6 +28,17 @@ namespace ProxyMe.Tests
         }
 
         [TestMethod]
+        public void Contract_Create_ShouldReturnObject_ForUntyped()
+        {
+            // Act
+            var foo = Proxy.CreateContract(typeof(IFoo));
+
+            // Assert
+            foo.Should().NotBeNull();
+            foo.Should().BeAssignableTo<IFoo>();
+        }
+
+        [TestMethod]
         public void Contract_Create_ShouldBeInitializedWithSuppliedValues()
         {
             // Act

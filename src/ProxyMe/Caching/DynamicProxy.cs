@@ -1,37 +1,52 @@
 ﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Reflection;
+using ProxyMe.Caching.Extensions;
 using ProxyMe.Emit;
 
 namespace ProxyMe.Caching
 {
-    public static class DynamicProxy<T>
+    public static class DynamicProxy
     {
-        private static readonly TypeInfo Type;
-        private static readonly Func<T, T> Constructor;
+        private static readonly ConcurrentDictionary<Type, Func<object, object>> Constructors =
+            new ConcurrentDictionary<Type, Func<object, object>>();
 
-        static DynamicProxy()
+        public static object CreateInstance(Type type, object target)
         {
-            Type = CreateType();
-            Constructor = Type.CreateConstructorDelegate<T, T>();
+            var constructor = Constructors.GetOrAdd(type, GetConstructor);
+            var instance = constructor(target);
+
+            return instance;
         }
 
-        public static T CreateInstance(T target)
+        public static T CreateInstance<T>(T target)
         {
-            return Constructor(target);
+            return Compiled<T>.Constructor(target);
         }
 
-        public static Type GetDynamicType()
+        private static Func<object, object> GetConstructor(Type proxyType)
         {
-            return Type.GetType();
+            return (Func<object, object>)typeof(Compiled<>).
+                MakeGenericType(proxyType).
+                GetRuntimeField("ObjectConstructor").
+                GetValue(null);
         }
 
-        private static TypeInfo CreateType()
+        private static class Compiled<T>
         {
-            var contractType = typeof(T);
-            var proxyBuilder = new DynamicProxyBuilder();
-            var proxyType = proxyBuilder.CreateType(contractType);
+            public static readonly Func<T, T> Constructor;
+            public static readonly Func<object, object> ObjectConstructor;
 
-            return proxyType;
+            static Compiled()
+            {
+                var proxyType = typeof(T);
+                var dynamicBuilder = new DynamicProxyBuilder();
+                var dynamicType = dynamicBuilder.CreateType(proxyType);
+
+                Constructor = dynamicType.CreateConstructorDelegate<T, T>();
+                ObjectConstructor = obj => Constructor((T)obj);
+            }
         }
     }
 }

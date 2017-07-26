@@ -20,6 +20,19 @@ namespace ProxyMe.Tests
         }
 
         [TestMethod]
+        public void Proxy_Create_ShouldReturnObject_ForUntyped()
+        {
+            var foo = new Foo();
+
+            // Act
+            var proxy = Proxy.Create(typeof(IFoo), foo);
+
+            // Assert
+            proxy.Should().NotBeNull();
+            proxy.Should().BeAssignableTo<IFoo>();
+        }
+
+        [TestMethod]
         public void Proxy_SetProperty_ShouldSetTargetProperty()
         {
             // Arrange

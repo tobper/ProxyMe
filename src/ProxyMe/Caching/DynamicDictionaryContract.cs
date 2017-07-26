@@ -1,39 +1,52 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Reflection;
+using ProxyMe.Caching.Extensions;
 using ProxyMe.Emit;
 
 namespace ProxyMe.Caching
 {
-    public static class DynamicDictionaryContract<T>
-        where T : class
+    using ParameterDictionary = IDictionary<string, object>;
+
+    public static class DynamicDictionaryContract
     {
-        private static readonly TypeInfo Type;
-        private static readonly Func<IDictionary<string, object>, T> Constructor;
+        private static readonly ConcurrentDictionary<Type, Func<ParameterDictionary, object>> Constructors =
+            new ConcurrentDictionary<Type, Func<ParameterDictionary, object>>();
 
-        static DynamicDictionaryContract()
+        public static object CreateInstance(Type type, ParameterDictionary properties)
         {
-            Type = CreateType();
-            Constructor = Type.CreateConstructorDelegate<T, IDictionary<string, object>>();
+            var constructor = Constructors.GetOrAdd(type, GetConstructor);
+            var instance = constructor(properties);
+
+            return instance;
         }
 
-        public static T CreateInstance(IDictionary<string, object> properties)
+        public static T CreateInstance<T>(IDictionary<string, object> properties)
         {
-            return Constructor(properties);
+            return Compiled<T>.Constructor(properties);
         }
 
-        public static Type GetDynamicType()
+        private static Func<ParameterDictionary, object> GetConstructor(Type contractType)
         {
-            return Type.GetType();
+            return (Func<ParameterDictionary, object>)typeof(Compiled<>).
+                MakeGenericType(contractType).
+                GetRuntimeField("Constructor").
+                GetValue(null);
         }
 
-        private static TypeInfo CreateType()
+        private static class Compiled<T>
         {
-            var contractType = typeof(T);
-            var proxyBuilder = new DynamicDictionaryContractBuilder();
-            var proxyType = proxyBuilder.CreateType(contractType);
+            public static readonly Func<IDictionary<string, object>, T> Constructor;
 
-            return proxyType;
+            static Compiled()
+            {
+                var contractType = typeof(T);
+                var dynamicBuilder = new DynamicDictionaryContractBuilder();
+                var dynamicType = dynamicBuilder.CreateType(contractType);
+
+                Constructor = dynamicType.CreateConstructorDelegate<T, IDictionary<string, object>>();
+            }
         }
     }
 }

@@ -1,37 +1,28 @@
 ﻿using System;
-using System.Reflection;
+using ProxyMe.Caching.Extensions;
 using ProxyMe.Emit;
 
 namespace ProxyMe.Caching
 {
-    public static class DynamicSubType<T>
+    public static class DynamicSubType
     {
-        private static readonly TypeInfo Type;
-        private static readonly Func<T> Constructor;
-
-        static DynamicSubType()
+        public static T CreateInstance<T>()
         {
-            Type = CreateType();
-            Constructor = Type.CreateConstructorDelegate<T>();
+            return Compiled<T>.Constructor();
         }
 
-        public static T CreateInstance()
+        private static class Compiled<T>
         {
-            return Constructor();
-        }
+            public static readonly Func<T> Constructor;
 
-        public static Type GetDynamicType()
-        {
-            return Type.GetType();
-        }
+            static Compiled()
+            {
+                var superType = typeof(T);
+                var dynamicBuilder = new DynamicSubTypeBuilder();
+                var dynamicType = dynamicBuilder.CreateType(superType);
 
-        private static TypeInfo CreateType()
-        {
-            var superType = typeof(T);
-            var proxyBuilder = new DynamicSubTypeBuilder();
-            var proxyType = proxyBuilder.CreateType(superType);
-
-            return proxyType;
+                Constructor = dynamicType.CreateConstructorDelegate<T>();
+            }
         }
     }
 }

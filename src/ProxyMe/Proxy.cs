@@ -10,6 +10,27 @@ namespace ProxyMe
     public static class Proxy
     {
         /// <summary>
+        ///     Creates a dynamic proxy of type <paramref name="type"/> for the
+        ///     provided <paramref name="target"/> instance.
+        /// </summary>
+        /// <param name="type">
+        ///     The type of interface to create a proxy for.
+        /// </param>
+        /// <param name="target">
+        ///     The instance to create a proxy for.
+        /// </param>
+        /// <returns>
+        ///     A proxy for the specified <paramref name="target"/>.
+        /// </returns>
+        /// <exception cref="InvalidOperationException">
+        ///     <paramref name="type"/> is not an interface.
+        /// </exception>
+        public static object Create(Type type, object target)
+        {
+            return DynamicProxy.CreateInstance(type, target);
+        }
+
+        /// <summary>
         ///     Creates a dynamic proxy of type <typeparamref name="T"/> for the
         ///     provided <paramref name="target"/> instance.
         /// </summary>
@@ -28,7 +49,27 @@ namespace ProxyMe
         public static T Create<T>(T target)
             where T : class
         {
-            return DynamicProxy<T>.CreateInstance(target);
+            return DynamicProxy.CreateInstance(target);
+        }
+
+        /// <summary>
+        ///     Creates a dynamic implementation of interface specified as argument.
+        /// </summary>
+        /// <param name="type">
+        ///     The type of interface to create an implementation for.
+        /// </param>
+        /// <returns>
+        ///     An instance of <paramref name="type"></paramref>.
+        /// </returns>
+        /// <exception cref="InvalidOperationException">
+        ///     <paramref name="type"/> is not an interface.
+        /// </exception>
+        /// <exception cref="InvalidOperationException">
+        ///     <paramref name="type"/> contains methods.
+        /// </exception>
+        public static object CreateContract(Type type)
+        {
+            return DynamicContract.CreateInstance(type);
         }
 
         /// <summary>
@@ -49,7 +90,7 @@ namespace ProxyMe
         public static T CreateContract<T>()
             where T : class
         {
-            return DynamicContract<T>.CreateInstance();
+            return DynamicContract.CreateInstance<T>();
         }
 
         /// <summary>
@@ -74,7 +115,32 @@ namespace ProxyMe
         public static T CreateContract<T>(Action<T> initializer)
             where T : class
         {
-            return DynamicContract<T>.CreateInstance(initializer);
+            return DynamicContract.CreateInstance(initializer);
+        }
+
+        /// <summary>
+        ///     Creates an implementation of interface <paramref name="type"/> using
+        ///     the specified <paramref name="properties"/> dictionary as backing for
+        ///     the interface properties.
+        /// </summary>
+        /// <param name="type">
+        ///     The type of interface to create an implementation for.
+        /// </param>
+        /// <param name="properties">
+        ///     The dictionary to use as backing storage for the properties on the interface.
+        /// </param>
+        /// <returns>
+        ///     An instance of <paramref name="type"></paramref>.
+        /// </returns>
+        /// <exception cref="InvalidOperationException">
+        ///     <paramref name="type"/> is not an interface.
+        /// </exception>
+        /// <exception cref="InvalidOperationException">
+        ///     <paramref name="type"/> contains methods.
+        /// </exception>
+        public static object CreateContract(Type type, IDictionary<string, object> properties)
+        {
+            return DynamicDictionaryContract.CreateInstance(type, properties);
         }
 
         /// <summary>
@@ -100,7 +166,7 @@ namespace ProxyMe
         public static T CreateContract<T>(IDictionary<string, object> properties)
             where T : class
         {
-            return DynamicDictionaryContract<T>.CreateInstance(properties);
+            return DynamicDictionaryContract.CreateInstance<T>(properties);
         }
 
         /// <summary>
@@ -118,7 +184,7 @@ namespace ProxyMe
         public static T CreateSubType<T>()
             where T : class
         {
-            return DynamicSubType<T>.CreateInstance();
+            return DynamicSubType.CreateInstance<T>();
         }
     }
 }

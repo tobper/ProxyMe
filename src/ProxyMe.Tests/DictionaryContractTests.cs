@@ -32,6 +32,18 @@ namespace ProxyMe.Tests
         }
 
         [TestMethod]
+        public void DictionaryContract_Create_ShouldReturnObject_ForUntyped()
+        {
+            // Act
+            var properties = new Dictionary<string, object>();
+            var foo = Proxy.CreateContract(typeof(IFoo), properties);
+
+            // Assert
+            foo.Should().NotBeNull();
+            foo.Should().BeAssignableTo<IFoo>();
+        }
+
+        [TestMethod]
         public void DictionaryContract_Create_ShouldBeInitializedWithSuppliedValues()
         {
             // Act
